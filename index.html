@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Diamond Wafer Delivery</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+  <div>
+    <h2>🍪 Diamond Wafer</h2>
+    <small>Delivery Route Manager</small>
+  </div>
+</header>
+
+<main>
+
+  <!-- AREA -->
+  <div class="tabs">
+    <button class="tab active" onclick="changeArea(1)">
+      Area 1
+    </button>
+
+    <button class="tab" onclick="changeArea(2)">
+      Area 2
+    </button>
+  </div>
+
+
+  <!-- WHATSAPP LOCATION -->
+  <section class="card">
+
+    <h3>📍 WhatsApp Locations</h3>
+
+    <p>
+      WhatsApp वरून Google Maps location copy करा आणि
+      प्रत्येक location नवीन line मध्ये paste करा.
+    </p>
+
+    <textarea
+      id="locationInput"
+      placeholder="उदा.
+
+https://maps.google.com/?q=19.0760,72.8777
+https://maps.google.com/?q=19.0330,73.0297
+https://maps.google.com/?q=19.0473,73.0690">
+    </textarea>
+
+    <div class="buttons">
+
+      <button
+        class="primary"
+        onclick="loadLocations()">
+        📥 Load Locations
+      </button>
+
+      <button
+        class="secondary"
+        onclick="clearLocations()">
+        Clear
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- SUMMARY -->
+  <section class="stats">
+
+    <div>
+      <span>Total</span>
+      <strong id="total">0</strong>
+    </div>
+
+    <div>
+      <span>Delivered</span>
+      <strong id="delivered">0</strong>
+    </div>
+
+    <div>
+      <span>Pending</span>
+      <strong id="pending">0</strong>
+    </div>
+
+    <div>
+      <span>Payment Pending</span>
+      <strong id="paymentPending">0</strong>
+    </div>
+
+  </section>
+
+
+  <!-- MAP -->
+  <section class="card">
+
+    <div class="map-header">
+
+      <h3>🗺️ Delivery Route</h3>
+
+      <button
+        class="primary"
+        onclick="createRoute()">
+        🚚 Create Route
+      </button>
+
+    </div>
+
+    <div id="map"></div>
+
+  </section>
+
+
+  <!-- ORDERS -->
+  <section class="card">
+
+    <h3>📦 Delivery Sequence</h3>
+
+    <div id="orders">
+
+      <p class="empty">
+        No orders loaded.
+      </p>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<script src="app.js"></script>
+
+
+<!-- GOOGLE MAPS -->
+<script
+  async
+  defer
+  src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap">
+</script>
+
+</body>
+</html>
