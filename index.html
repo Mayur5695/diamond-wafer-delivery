@@ -12,15 +12,12 @@
 <body>
 
 <header>
-  <div>
-    <h2>🍪 Diamond Wafer</h2>
-    <small>Delivery Route Manager</small>
-  </div>
+  <h2>🍪 Diamond Wafer</h2>
+  <small>Delivery Route Manager</small>
 </header>
 
 <main>
 
-  <!-- AREA -->
   <div class="tabs">
     <button class="tab active" onclick="changeArea(1)">
       Area 1
@@ -32,23 +29,22 @@
   </div>
 
 
-  <!-- WHATSAPP LOCATION -->
   <section class="card">
 
     <h3>📍 WhatsApp Locations</h3>
 
     <p>
-      WhatsApp वरून Google Maps location copy करा आणि
-      प्रत्येक location नवीन line मध्ये paste करा.
+      WhatsApp वरून Google Maps locations copy करून
+      खाली paste करा.
     </p>
 
     <textarea
       id="locationInput"
-      placeholder="उदा.
+      placeholder="प्रत्येक location नवीन line मध्ये paste करा
 
-https://maps.google.com/?q=19.0760,72.8777
-https://maps.google.com/?q=19.0330,73.0297
-https://maps.google.com/?q=19.0473,73.0690">
+उदा.
+https://maps.app.goo.gl/eeHEzFYkJESpKmsn7
+https://maps.app.goo.gl/XXXXXXXXXX">
     </textarea>
 
     <div class="buttons">
@@ -67,10 +63,11 @@ https://maps.google.com/?q=19.0473,73.0690">
 
     </div>
 
+    <p id="message"></p>
+
   </section>
 
 
-  <!-- SUMMARY -->
   <section class="stats">
 
     <div>
@@ -96,7 +93,6 @@ https://maps.google.com/?q=19.0473,73.0690">
   </section>
 
 
-  <!-- MAP -->
   <section class="card">
 
     <div class="map-header">
@@ -116,7 +112,6 @@ https://maps.google.com/?q=19.0473,73.0690">
   </section>
 
 
-  <!-- ORDERS -->
   <section class="card">
 
     <h3>📦 Delivery Sequence</h3>
@@ -136,12 +131,10 @@ https://maps.google.com/?q=19.0473,73.0690">
 
 <script src="app.js"></script>
 
-
-<!-- GOOGLE MAPS -->
 <script
   async
   defer
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAID2GlgLMjCLTkYYNQxoHmWGtlGifmS8I&callback=initMap">
+  src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap">
 </script>
 
 </body>
