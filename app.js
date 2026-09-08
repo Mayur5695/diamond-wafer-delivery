@@ -58,7 +58,7 @@ function changeArea(area) {
 
 
 /* =========================
-   GET CURRENT LOCATIONS
+   GET LOCATIONS
 ========================= */
 
 function getLocations() {
@@ -69,12 +69,17 @@ function getLocations() {
 
 
 /* =========================
-   EXTRACT LAT LNG
+   EXTRACT COORDINATES
 ========================= */
 
 function extractCoordinates(text) {
 
-  let match = text.match(
+  let match;
+
+
+  // ?q=19.123,73.123
+
+  match = text.match(
     /[?&]q=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/
   );
 
@@ -87,6 +92,8 @@ function extractCoordinates(text) {
 
   }
 
+
+  // @19.123,73.123
 
   match = text.match(
     /@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/
@@ -102,6 +109,24 @@ function extractCoordinates(text) {
   }
 
 
+  // !3d19.123!4d73.123
+
+  match = text.match(
+    /!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/
+  );
+
+  if (match) {
+
+    return {
+      lat: parseFloat(match[1]),
+      lng: parseFloat(match[2])
+    };
+
+  }
+
+
+  // Plain coordinates
+
   match = text.match(
     /(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/
   );
@@ -115,6 +140,7 @@ function extractCoordinates(text) {
 
   }
 
+
   return null;
 
 }
@@ -124,23 +150,31 @@ function extractCoordinates(text) {
    LOAD LOCATIONS
 ========================= */
 
-function loadLocations() {
+async function loadLocations() {
+
+  const input =
+    document.getElementById("locationInput");
+
+  const message =
+    document.getElementById("message");
 
   const text =
-    document
-      .getElementById("locationInput")
-      .value
-      .trim();
+    input.value.trim();
 
 
   if (!text) {
 
     alert(
-      "WhatsApp locations paste करा."
+      "WhatsApp location paste करा."
     );
 
     return;
+
   }
+
+
+  message.innerText =
+    "Locations loading...";
 
 
   const lines =
@@ -153,10 +187,66 @@ function loadLocations() {
   const newLocations = [];
 
 
-  lines.forEach((line) => {
+  for (const line of lines) {
 
-    const coordinates =
+    let coordinates =
       extractCoordinates(line);
+
+
+    /*
+      Short Google Maps link
+      resolve करण्यासाठी API call
+    */
+
+    if (
+      !coordinates &&
+      line.includes("maps.app.goo.gl")
+    ) {
+
+      try {
+
+        const response =
+          await fetch(
+            `/api/resolve-location?url=${encodeURIComponent(line)}`
+          );
+
+
+        if (response.ok) {
+
+          const data =
+            await response.json();
+
+
+          if (
+            data.lat &&
+            data.lng
+          ) {
+
+            coordinates = {
+
+              lat:
+                parseFloat(data.lat),
+
+              lng:
+                parseFloat(data.lng)
+
+            };
+
+          }
+
+        }
+
+      }
+      catch (error) {
+
+        console.error(
+          "Resolve error:",
+          error
+        );
+
+      }
+
+    }
 
 
     if (coordinates) {
@@ -175,16 +265,20 @@ function loadLocations() {
 
     }
 
-  });
+  }
 
 
   if (newLocations.length === 0) {
 
+    message.innerText =
+      "❌ Location सापडली नाही.";
+
     alert(
-      "Location सापडली नाही. Google Maps link paste करा."
+      "Location सापडली नाही. Link तपासा."
     );
 
     return;
+
   }
 
 
@@ -194,11 +288,15 @@ function loadLocations() {
 
   displayLocations();
 
+
+  message.innerText =
+    `✅ ${newLocations.length} locations loaded.`;
+
 }
 
 
 /* =========================
-   DISPLAY MAP LOCATIONS
+   DISPLAY LOCATIONS
 ========================= */
 
 function displayLocations() {
@@ -206,13 +304,9 @@ function displayLocations() {
   if (!map) return;
 
 
-  /* Remove old markers */
-
-  markers.forEach(marker => {
-
-    marker.setMap(null);
-
-  });
+  markers.forEach(
+    marker => marker.setMap(null)
+  );
 
   markers = [];
 
@@ -290,17 +384,20 @@ function createRoute() {
     );
 
     return;
+
   }
 
 
   const path =
-    locations.map(location => ({
+    locations.map(
+      location => ({
 
-      lat: location.lat,
+        lat: location.lat,
 
-      lng: location.lng
+        lng: location.lng
 
-    }));
+      })
+    );
 
 
   if (routeLine) {
@@ -341,7 +438,7 @@ function createRoute() {
 
 
 /* =========================
-   DELIVERY STATUS
+   DELIVERY
 ========================= */
 
 function toggleDelivered(index) {
@@ -362,7 +459,7 @@ function toggleDelivered(index) {
 
 
 /* =========================
-   PAYMENT STATUS
+   PAYMENT
 ========================= */
 
 function togglePayment(index) {
@@ -414,7 +511,6 @@ function displayOrders() {
   locations.forEach(
     (location, index) => {
 
-
       const order =
         document.createElement("div");
 
@@ -428,7 +524,6 @@ function displayOrders() {
         <div class="order-number">
           ${index + 1}
         </div>
-
 
         <div class="order-info">
 
@@ -482,7 +577,6 @@ function displayOrders() {
 
 
         <div class="order-actions">
-
 
           <button
             class="${
@@ -538,7 +632,6 @@ function displayOrders() {
 
           </button>
 
-
         </div>
 
       `;
@@ -553,7 +646,7 @@ function displayOrders() {
 
 
 /* =========================
-   GOOGLE MAP NAVIGATION
+   NAVIGATE
 ========================= */
 
 function navigateTo(index) {
@@ -576,7 +669,7 @@ function navigateTo(index) {
 
 
 /* =========================
-   UPDATE SUMMARY
+   STATS
 ========================= */
 
 function updateStats() {
@@ -625,7 +718,7 @@ function updateStats() {
 
 
 /* =========================
-   CLEAR LOCATIONS
+   CLEAR
 ========================= */
 
 function clearLocations() {
@@ -638,11 +731,14 @@ function clearLocations() {
   ).value = "";
 
 
-  markers.forEach(marker => {
+  document.getElementById(
+    "message"
+  ).innerText = "";
 
-    marker.setMap(null);
 
-  });
+  markers.forEach(
+    marker => marker.setMap(null)
+  );
 
 
   markers = [];
